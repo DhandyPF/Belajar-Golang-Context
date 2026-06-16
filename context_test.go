@@ -48,7 +48,7 @@ func TestContextWithValue(t *testing.T) {
 	fmt.Println(contextF.Value("d"))
 }
 
-// Problem Goroutine Leak
+// -- Problem Goroutine Leak -- 
 // func CreateCounter() chan int {
 // 	destination := make(chan int)
 
@@ -123,7 +123,49 @@ func TestContextWithValue(t *testing.T) {
 // 	fmt.Println("Total Goroutine", runtime.NumGoroutine())
 // }
 
-// Context dengan Timeout
+// -- Context dengan Timeout --
+// func CreateCounter(ctx context.Context) chan int {
+// 	destination := make(chan int)
+
+// 	go func ()  {
+// 		defer close(destination)
+// 		counter := 1
+// 		for {
+// 			select {
+// 			case <-ctx.Done():
+// 				return
+// 			default:
+// 				destination  <- counter
+// 				counter++
+// 				time.Sleep(1 * time.Second) // Simulasi slow
+// 			}
+			
+// 		}
+// 	}()
+
+// 	return destination 
+// }
+
+// func TestContextWithiTimeout(t *testing.T) {
+// 	fmt.Println("Total Goroutine", runtime.NumGoroutine())
+
+// 	parent := context.Background()
+// 	ctx, cancel := context.WithTimeout(parent, 5 * time.Second)
+// 	defer cancel()
+
+// 	destination := CreateCounter(ctx)
+// 	fmt.Println("Total Goroutine", runtime.NumGoroutine())
+
+// 	for n := range destination {
+// 		fmt.Println("Counter", n)
+// 	}
+
+// 	time.Sleep(2 * time.Second)
+
+// 	fmt.Println("Total Goroutine", runtime.NumGoroutine())
+// }
+
+// -- Context dengan Deadline --
 func CreateCounter(ctx context.Context) chan int {
 	destination := make(chan int)
 
@@ -146,15 +188,14 @@ func CreateCounter(ctx context.Context) chan int {
 	return destination 
 }
 
-func TestContextWithiTimeout(t *testing.T) {
+func TestContextWithDeadline(t *testing.T) {
 	fmt.Println("Total Goroutine", runtime.NumGoroutine())
 
 	parent := context.Background()
-	ctx, cancel := context.WithTimeout(parent, 5 * time.Second)
+	ctx, cancel := context.WithDeadline(parent, time.Now().Add(10 * time.Second))
 	defer cancel()
 
 	destination := CreateCounter(ctx)
-
 	fmt.Println("Total Goroutine", runtime.NumGoroutine())
 
 	for n := range destination {
