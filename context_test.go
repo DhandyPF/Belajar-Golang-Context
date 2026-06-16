@@ -39,9 +39,10 @@ func TestContextWithValue(t *testing.T) {
 	fmt.Println(contextF)
 	fmt.Println(contextG)
 
-	// Mendapatkan value ari Context
+	// Mendapatkan value dari Context
 	fmt.Println(contextF.Value("f"))
 	fmt.Println(contextF.Value("c"))
 	fmt.Println(contextF.Value("b"))
 	fmt.Println(contextF.Value("d"))
 }
+
